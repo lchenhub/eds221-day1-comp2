@@ -18,8 +18,24 @@ library(skimr)
 The data are stored in the `data-raw` subfolder. We'll use `here::here()` to point to it, and read it in using the `readr::read_csv()` function from the `readr` package (part of the `tidyverse`). 
 
 ```{r}
-toolik_weather <- read_csv(here::here("data", "data-raw", "toolik_weather.csv"))
+toolik_weather <- readr::read_csv(here::here("data", "data-raw", "toolik_weather.csv"), na = "#N/A") |> 
+  clean_names()
 ```
+
+```{r}
+myAwesomeChart <- ggplot(data = toolik_weather, aes(x = as.factor(month), y = daily_air_temp_mean_c)) +
+  geom_jitter(aes(color = daily_air_temp_mean_c), show.legend = FALSE) +
+  scale_color_gradient(low = "blue", high = "orange") +
+  theme_minimal() +
+  labs(title = "Toolik Station daily air temperature",
+       x = "Month",
+       y = "Daily mean air temperatures (Celsius)")
+
+toolik_temp_plot
+
+# ggsave(here::here("figs", "myAwesomeChart.jpg"), height = 5, width = 6)
+```
+
 
 
 - First: Look at the data you've read in (always always)
